@@ -1,0 +1,23 @@
+[app]
+secret_key = secret_key
+wtf_csrf_enabled = true
+debug = true
+
+[sqlalchemy]
+postgres_default_user = postgres
+postgres_user = app_name
+postgres_password = password
+postgres_db = db_name
+sqlalchemy_database_uri = 'postgresql://' + ${sqlalchemy:postgres_user} + ':' + ${sqlalchemy:postgres_password} + '@postgres:5432/' + ${sqlalchemy:postgres_db}
+
+[bcrypt]
+bcrypt_log_rounds = 15
+
+[email]
+mail_server = smpt
+mail_port = 1025
+mail_use_tls = False
+mail_use_ssl = False
+mail_username = mail@localhost
+mail_password = password
+mail_default_sender = mail@localhost
