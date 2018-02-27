@@ -1,6 +1,6 @@
 ## Introduction
 
-Base template for creating flask app
+Base template for creating flask app - borrowed heavily from [flask recipe](https://gitlab.com/patkennedy79/flask_recipe_app)
 
 ## How to Run (Development)
 
