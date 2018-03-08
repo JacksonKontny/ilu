@@ -20,6 +20,7 @@ from flask_httpauth import HTTPBasicAuth
 ################
 
 app = Flask(__name__, instance_relative_config=True)
+
 if isfile(join('instance', 'flask_full.cfg')):
     app.config.from_pyfile('flask_full.cfg')
 else:
@@ -36,3 +37,6 @@ auth_token = HTTPBasicAuth()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "users.login"
+
+from project.web.views import view_blueprint
+app.register_blueprint(view_blueprint)

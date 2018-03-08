@@ -6,8 +6,8 @@
 
 from flask import render_template, Blueprint, request, redirect, url_for, flash, abort, jsonify
 from flask_login import current_user, login_required
-from project import db, images, app
-from project.models import User
+from project import app, db
+from project.models import *
 from random import random
 
 
@@ -32,3 +32,9 @@ def flash_errors(form):
 ################
 #### routes ####
 ################
+
+@view_blueprint.route('/')
+def hello_world():
+    return 'Hello World'
+
+app.register_blueprint(view_blueprint)

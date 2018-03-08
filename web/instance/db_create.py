@@ -10,11 +10,10 @@ if os.path.abspath(os.curdir) not in sys.path:
     print('...missing directory in PYTHONPATH... added!')
     sys.path.append(os.path.abspath(os.curdir))
 
+from project import db
+from project.models import *
 
 # Create the database tables, add some initial data, and commit to the database
-from project import db
-from project.models import .
-
 # Drop all of the existing database tables
 db.drop_all()
 

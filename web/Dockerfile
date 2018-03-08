@@ -4,8 +4,8 @@ MAINTAINER Jackson Kontny <jackson.kontny@gmail.com>
 # Create the group and user to be used in this container
 # Also create the users home dir and specify bash as the shell
 RUN groupadd flaskgroup && \
-	useradd -m -g flaskgroup -s /bin/bash flask && \
-	mkdir -p /home/flask/app/web
+    useradd -m -g flaskgroup -s /bin/bash flask && \
+    mkdir -p /home/flask/app/web
 WORKDIR /home/flask/app/web
 
 # Install the package dependencies (this step is separated
@@ -17,5 +17,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /home/flask/app/web
 
-USER flask
 RUN chown -R flask:flaskgroup /home/flask
+USER flask
