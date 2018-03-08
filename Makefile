@@ -8,3 +8,6 @@ dev:
 
 prod:
 	docker-compose -f docker-compose.yml up -d
+
+migrate:
+	flask db migrate -m '$(MESSAGE)'
