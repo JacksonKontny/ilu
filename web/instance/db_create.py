@@ -20,12 +20,7 @@ db.drop_all()
 # Create the database and the database table
 db.create_all()
 
-# Insert data
-
-# Commit the changes for the users
-db.session.commit()
-
-# Commit the changes for the recipes
+# Commit the changes
 db.session.commit()
 
 print('...done!')
