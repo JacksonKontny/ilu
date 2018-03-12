@@ -12,18 +12,18 @@ class User(UserMixin, db.Model):
 
     __tablename__ = 'user'
 
-    user_id = db.Column(db.Integer, unique=True, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    so_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
+    so_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     is_temp = db.Column(db.Boolean, default=False)
 
     @app.login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
+    def load_user(id):
+        return User.query.get(int(id))
 
-    def check_password(self):
+    def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
     def save(self, password=None):
@@ -32,5 +32,43 @@ class User(UserMixin, db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def has_so(self):
+        if self.so_id:
+            so = User.query.filter_by(id=self.so_id).first()
+            return not so.is_temp
+        return False
+
+    def ping_so(self):
+        msg = Ping(from_id=self.id, to_id=self.so_id)
+        msg.save()
+        db.session.refresh(msg)
+        return msg
+
+    def sent_messages(self):
+        return Ping.query.filter_by(from_id=self.id, to_id=self.so_id)
+
+    def received_messages(self):
+        return Ping.query.filter_by(from_id=self.so_id, to_id=self.id)
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+class Ping(db.Model):
+
+    __tablename__ = 'ping'
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    from_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    to_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    datetime = db.Column(db.DateTime)
+
+    def save(self):
+        self.datetime = datetime.now()
+        db.session.add(self)
+        db.session.commit()
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'sent_at': self.datetime
+        }
