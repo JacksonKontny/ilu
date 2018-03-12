@@ -53,7 +53,7 @@ There's loads of room for improvement:
 
 1. Get `make test` working
 1. Create API documentation
-1. Document classes and functions
+1. Add documentation to tests
 1. Separate local requirements from production
 1. Use class based views
 1. Reorganize config files to 'local', 'dev', 'staging', 'production'
