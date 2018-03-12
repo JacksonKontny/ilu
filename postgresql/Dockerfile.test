@@ -1,0 +1,6 @@
+FROM postgres:10.2
+
+# Set environment variables
+ENV POSTGRES_USER flask
+ENV POSTGRES_PASSWORD flask
+ENV POSTGRES_DB flask-db-test

@@ -37,3 +37,5 @@ services:
       - data
     expose:
       - "5432"
+    environment:
+      - POSTGRES_DB=flask-db

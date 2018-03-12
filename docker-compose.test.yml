@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  web:
+    image: web_test
+    restart: always
+    build: ./web
+    command: flask run --host=0.0.0.0
+    depends_on:
+      - postgres
+    environment:
+      - FLASK_APP=run.py
+      - FLASK_DEBUG=1
+    volumes:
+      - ./web/:/usr/src/app/web
+      - ./web/:/home/flask/app/web
+    stdin_open: true
+    tty: true
+
+  data:
+    image: postgres:10.2
+    volumes:
+      - /var/lib/postgresql
+    command: "true"
+
+  postgres:
+    image: db_test
+    restart: always
+    build:
+        context: .
+        dockerfile: postgresql/Dockerfile.test
+    volumes_from:
+      - data
+    ports:
+      - "5432:5432"

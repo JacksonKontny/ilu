@@ -14,10 +14,17 @@ from flask_pagedown import PageDown
 from flask_migrate import Migrate
 from flask_httpauth import HTTPBasicAuth
 
+from instance.config import app_config
+
 
 ################
 #### config ####
 ################
+
+def create_app():
+    app = Flask(__name__, instance_relative_config=True)
+
+
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -27,9 +34,8 @@ else:
     app.config.from_pyfile('flask.cfg')
 
 db = SQLAlchemy(app)
+
 bcrypt = Bcrypt(app)
-mail = Mail(app)
-pagedown = PageDown(app)
 migrate = Migrate(app, db)
 auth = HTTPBasicAuth()
 auth_token = HTTPBasicAuth()
@@ -39,4 +45,6 @@ login_manager.init_app(app)
 login_manager.login_view = "users.login"
 
 from project.web.views import view_blueprint
+from project.api.views import api_blueprint
 app.register_blueprint(view_blueprint)
+app.register_blueprint(api_blueprint)
