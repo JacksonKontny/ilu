@@ -1,41 +1,43 @@
 ## Introduction
 
+We see it all of the time on the big screen - a loved one is lost and the living can't
+help but fret that they never 'told them I loved them.'  We can't help it when we
+ask ourselves 'When was the last time I told my significant other I loved them?'
+Worry no more!  ILU is a service for sending and tracking that special message
+to the person we care about most.
+
 Base template for creating flask app - borrowed heavily from [flask recipe](https://gitlab.com/patkennedy79/flask_recipe_app)
 
 ## How to Run (Development)
 
-1. Create the Dockerfile for the postgres service
-
-- % cd ./flask_app/web/
-- % python create_postgres_dockerfile.py
-- % cd ..
-
-2. Build and run the Docker containers
-
-- % docker-compose build
-- % docker-compose up -d
-
-3. Create or re-initialize the database
-
-- % docker-compose run --rm web python ./instance/db_create.py
+With docker, etting started is as easy as `make init_project`.  This
+handles:
+1. Creating the Dockerfile for the postgres service. The db 
+configuraitons in web/instance/flask.cfg are copied to postgresql/Dockerfile
+1. Building the docker images
+1. Starting the docker containers
+1. Initializing the database
 
 Go to your favorite web browser and open:
-    http://192.168.99.100:5000  $ Check the IP address using 'docker-machine ip'
+    http://localhost:5000  $ Or check the IP address using 'docker-machine ip'
+
+## How to Run (Production)
+
+The production environment can be started with `make prod`
+
+The production environment uses gunicorn and nginx containers. By
+specifying 'docker-compose.yml' in the make command, docker does
+not run docker-compose.override.yml, which is run by default
 
 ## Key Python Modules Used
 
 - Flask - web framework
-- Jinga2 - templating engine
 - SQLAlchemy - ORM (Object Relational Mapper)
-- Flask-Bcrypt - password hashing
 - Flask-Login - support for user management
 - Flask-Migrate - database migrations
 - Flask-WTF - simplifies forms
-- itsdangerous - helps with user management, especially tokens
 
-This application is written using Python 3.6.1.  The database used is PostgreSQL.
-
-Docker is the recommended tool for running in development and production.
+This application is written using Python 3.6.3.  The database used is PostgreSQL.
 
 ## Unit Testing
 
@@ -43,4 +45,4 @@ In the top-level folder:
     % nose2
 
 For running a specific module:
-    % nose2 -v project.tests.test_recipes_api
+    % nose2 -v project.tests.test_module.py

@@ -1,14 +1,15 @@
 # placeholder for tests
 import json
 import os
+import sys
 import unittest
 import tempfile
 import datetime
 from project import app, db, models
 
-import os,sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 basedir = os.path.abspath(os.path.dirname(__file__))
+
 from flask_sqlalchemy import SQLAlchemy
 
 

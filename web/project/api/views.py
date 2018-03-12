@@ -5,7 +5,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from flask_restful import abort
 
 from project import db, auth, auth_token, app
-from project.web.forms import RegistrationForm, SOForm, LoginForm
+from project.api.forms import RegistrationForm, SOForm, LoginForm
 from project.models import User
 
 
