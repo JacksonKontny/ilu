@@ -58,3 +58,4 @@ There's loads of room for improvement:
 1. Use class based views
 1. Reorganize config files to 'local', 'dev', 'staging', 'production'
 1. Use token based authentication
+1. Improve routing - separate log in endpoints from message handling
