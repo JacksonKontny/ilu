@@ -34,6 +34,9 @@ class TestLogin(unittest.TestCase):
                 'password': 'password',
             })
         self.assertEqual(response.status_code, 201)
+        data = json.loads(response.data)
+        self.assertTrue(data['created'])
+        self.assertEqual(data['so_pending_id'], '')
         assert models.User.query.filter_by(username='something').first()
 
     def test_incomplete_data(self):
@@ -83,8 +86,12 @@ class TestLogin(unittest.TestCase):
 
     def test_register_temp_user(self):
         new_user = models.User(
-            username='something', email='something@something.com', password_hash='hash', is_temp=True)
+            email='something@something.com', password_hash='hash', is_temp=True)
         new_user.save()
+        so_pending_user = models.User(
+            username='waiting', email='waiting@something.com',
+            password_hash='hash', is_temp=False, so_id=new_user.id)
+        so_pending_user.save()
         response = self.app.post(
             '/register/',
             data={
@@ -96,6 +103,7 @@ class TestLogin(unittest.TestCase):
         data = json.loads(response.data)
         self.assertFalse(data['created'])
         self.assertEqual(data['username'], 'newusername')
+        self.assertEqual(data['so_pending_id'], so_pending_user.id)
 
     def test_update_new_so(self):
         user = models.User(

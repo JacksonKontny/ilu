@@ -64,17 +64,23 @@ def register():
         password (str): The user's non-hashed password
 
     Returns:
-        201 - {'id': '<user.id>', 'username': <user.username>, 'email': <user.email>} if successful
+        201 - {'id': '<user.id>', 'username': <user.username>, 'email': <user.email>, 'so_pending': (bool)} if successful
         400 - {'error_field': ['field error1', 'field error2'...]..., } if form errors
+
+        `so_pending` designates if the user has a pending so
     """
     
     form = RegistrationForm(data=request.get_json())
     if form.validate():
         user_created, user = User.register_user(form)
+        so_pending_id = ''
+        if not user_created:
+            so_pending_id = User.query.filter_by(so_id=user.id).first().id
         response = jsonify({
             'id': user.id,
             'username': user.username,
             'email': user.email,
+            'so_pending_id': so_pending_id,
             'created': user_created,
         })
         response.status_code = 201
