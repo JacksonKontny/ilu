@@ -1,7 +1,8 @@
 # project/api/views.py
-import uuid
 from flask import Blueprint, request, jsonify
 from flask_login import current_user, login_required, login_user, logout_user
+
+from sqlalchemy.orm import load_only
 
 from project import db, app
 from project.api.forms import RegistrationForm, SOForm, LoginForm
@@ -106,18 +107,12 @@ def update_so():
     """
     form = SOForm(data=request.get_json())
     if form.validate():
-        so = db.session.query(User).filter(
-            (User.username == form.username.data) | (User.email == form.email.data)
-        ).first()
-        if not so:
-            so = User(email=form.email.data, is_temp=True)
-            so.save(password=str(uuid.uuid4()))
-        current_user.so_id = so.id
-        current_user.save()
+        current_user.update_so(form)
 
         response = jsonify({
             'id': current_user.id,
-            'so_id': so.id,
+            'so_id': current_user.so_id,
+            'is_so_temp': db.session.query(User).options(load_only('is_temp')).get(current_user.so_id).is_temp
         })
         response.status_code = 200
         return response

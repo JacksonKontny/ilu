@@ -118,6 +118,10 @@ class TestLogin(unittest.TestCase):
         so_user = models.User.query.filter_by(email='new_email@email.com').first()
         user = models.User.query.get(user.id)
         self.assertEqual(user.so_id, so_user.id)
+        data = json.loads(response.data)
+        self.assertEqual(data['id'], user.id)
+        self.assertEqual(data['so_id'], user.so_id)
+        self.assertTrue(data['is_so_temp'])
 
     def test_update_existing_so(self):
         user = models.User(
@@ -143,6 +147,10 @@ class TestLogin(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         user = models.User.query.get(user.id)
         self.assertEqual(user.so_id, existing_so.id)
+        data = json.loads(response.data)
+        self.assertEqual(data['id'], user.id)
+        self.assertEqual(data['so_id'], user.so_id)
+        self.assertFalse(data['is_so_temp'])
 
     def test_login(self):
         new_user = models.User(

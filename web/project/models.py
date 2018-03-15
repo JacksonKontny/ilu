@@ -1,3 +1,4 @@
+import uuid
 from project import db, bcrypt, app
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from datetime import datetime
@@ -39,6 +40,16 @@ class User(UserMixin, db.Model):
         )
         user.save(registration_form.password.data)
         return True, user
+
+    def update_so(self, form):
+        so = db.session.query(User).filter(
+            (User.username == form.username.data) | (User.email == form.email.data)
+        ).first()
+        if not so:
+            so = User(email=form.email.data, is_temp=True)
+            so.save(password=str(uuid.uuid4()))
+        self.so_id = so.id
+        self.save()
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
