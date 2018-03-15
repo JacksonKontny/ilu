@@ -62,8 +62,7 @@ class TestLogin(unittest.TestCase):
     def test_duplicate_info(self):
         new_user = models.User(
             username='something', email='something@something.com', password_hash='hash')
-        db.session.add(new_user)
-        db.session.commit()
+        new_user.save()
 
         response = self.app.post(
             '/register/',
@@ -81,6 +80,22 @@ class TestLogin(unittest.TestCase):
                 'password': 'password',
             })
         self.assertEqual(response.status_code, 400)
+
+    def test_register_temp_user(self):
+        new_user = models.User(
+            username='something', email='something@something.com', password_hash='hash', is_temp=True)
+        new_user.save()
+        response = self.app.post(
+            '/register/',
+            data={
+                'username': 'newusername',
+                'email': new_user.email,
+                'password': 'password',
+            })
+        self.assertEqual(response.status_code, 201)
+        data = json.loads(response.data)
+        self.assertFalse(data['created'])
+        self.assertEqual(data['username'], 'newusername')
 
     def test_update_new_so(self):
         user = models.User(

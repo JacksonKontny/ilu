@@ -23,6 +23,23 @@ class User(UserMixin, db.Model):
     def load_user(id):
         return User.query.get(int(id))
 
+    @classmethod
+    def register_user(cls, registration_form):
+        temp_user = cls.query.filter_by(
+            email=registration_form.email.data,
+            is_temp=True
+        ).first()
+        if temp_user:
+            temp_user.username=registration_form.username.data
+            temp_user.save(registration_form.password.data)
+            return False, temp_user
+        user = User(
+            username=registration_form.username.data,
+            email=registration_form.email.data
+        )
+        user.save(registration_form.password.data)
+        return True, user
+
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
@@ -41,7 +58,6 @@ class User(UserMixin, db.Model):
     def ping_so(self):
         msg = Ping(from_id=self.id, to_id=self.so_id)
         msg.save()
-        db.session.refresh(msg)
         return msg
 
     def sent_messages(self):
@@ -66,6 +82,7 @@ class Ping(db.Model):
         self.datetime = datetime.now()
         db.session.add(self)
         db.session.commit()
+        db.session.expire(self)
 
     def serialize(self):
         return {

@@ -69,15 +69,12 @@ def register():
     
     form = RegistrationForm(data=request.get_json())
     if form.validate():
-        user = User(
-            username=form.username.data,
-            email=form.email.data
-        )
-        user.save(form.password.data)
+        user_created, user = User.register_user(form)
         response = jsonify({
             'id': user.id,
             'username': user.username,
             'email': user.email,
+            'created': user_created,
         })
         response.status_code = 201
         return response

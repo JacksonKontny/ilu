@@ -48,7 +48,7 @@ class RegistrationForm(Form):
             self.username.errors.append('Please use a different username.')
 
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
+        user = User.query.filter_by(email=email.data, is_temp=False).first()
         if user is not None:
             self.email.errors.append('Please use a different email address.')
 
