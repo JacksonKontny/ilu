@@ -1,5 +1,3 @@
-# project/recipes/forms.py
-
 from project import db
 from flask_wtf import Form
 from wtforms import validators, StringField, IntegerField

@@ -41,5 +41,10 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "users.login"
 
-from project.api.views import api_blueprint
-app.register_blueprint(api_blueprint)
+from project.api.views import login_blueprint
+from project.api.views import account_info_blueprint
+from project.api.views import messaging_blueprint
+
+app.register_blueprint(login_blueprint)
+app.register_blueprint(account_info_blueprint)
+app.register_blueprint(messaging_blueprint)
