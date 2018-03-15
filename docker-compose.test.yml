@@ -4,9 +4,6 @@ services:
   web:
     image: web_test
     restart: "no"
-    build: ./web
-    depends_on:
-      - postgres
     environment:
       - FLASK_APP=run.py
       - FLASK_TEST=1
@@ -22,10 +19,6 @@ services:
         context: ./postgresql
         args:
           POSTGRES_DB: flask-db-test
-    volumes:
-      - db:/var/lib/postgresql
-    expose:
-      - "5432"
 
 volumes:
     db:

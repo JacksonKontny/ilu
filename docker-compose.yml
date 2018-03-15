@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   web:
@@ -7,7 +7,7 @@ services:
     expose:
       - "8000"
     volumes:
-      - /usr/src/app/web/project/static
+      - static:/usr/src/app/web/project/static
     command: /usr/local/bin/gunicorn -w 2 -b :8000 project:app
     depends_on:
       - postgres
@@ -19,23 +19,20 @@ services:
       - "80:80"
     volumes:
       - /www/static
-    volumes_from:
-      - web
+      - static:/usr/src/app/web/project/static
     depends_on:
       - web
-
-  data:
-    image: postgres:10.2
-    volumes:
-      - /var/lib/postgresql
-    command: "true"
 
   postgres:
     restart: always
     build: ./postgresql
-    volumes_from:
-      - data
+    volumes:
+      - db:/var/lib/postgresql
     expose:
       - "5432"
     environment:
       - POSTGRES_DB=flask-db
+
+volumes:
+    static:
+    db:
