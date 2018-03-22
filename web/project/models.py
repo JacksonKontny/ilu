@@ -17,7 +17,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    so_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    so_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True)
     is_temp = db.Column(db.Boolean, default=False)
 
     @app.login_manager.user_loader
