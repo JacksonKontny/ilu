@@ -25,3 +25,5 @@ __pycache__/
 /web/htmlcov/
 
 /web/test.db
+
+/secret/*
