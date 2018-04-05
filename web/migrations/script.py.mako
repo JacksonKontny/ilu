@@ -5,6 +5,7 @@ Revises: ${down_revision}
 Create Date: ${create_date}
 
 """
+import sqlalchemy_utils
 
 # revision identifiers, used by Alembic.
 revision = ${repr(up_revision)}
