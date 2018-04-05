@@ -11,6 +11,8 @@ services:
     command: /usr/local/bin/gunicorn -w 2 -b :8000 project:app
     depends_on:
       - postgres
+    environment:
+      - FLASK_APP=run.py
 
   nginx:
     restart: always
@@ -24,6 +26,7 @@ services:
       - web
 
   postgres:
+    image: db
     restart: always
     build: ./postgresql
     volumes:
@@ -32,6 +35,10 @@ services:
       - "5432"
     environment:
       - POSTGRES_DB=flask-db
+    build:
+        context: ./postgresql
+        args:
+          POSTGRES_DB: flask-db
 
 volumes:
     static:
