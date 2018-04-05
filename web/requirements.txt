@@ -9,11 +9,11 @@ blinker==1.4
 cffi==1.7.0
 click==6.6
 cov-core==1.15.0
-coverage==4.2
 decorator==4.2.1
 duvet==0.1.2
 Flask==0.11.1
 Flask-Bcrypt==0.7.1
+Flask-Dance==0.14.0
 Flask-HTTPAuth==3.2.1
 Flask-Login==0.3.2
 Flask-Mail==0.9.1
@@ -64,6 +64,7 @@ requests-toolbelt==0.7.0
 simplegeneric==0.8.1
 six==1.10.0
 SQLAlchemy==1.0.13
+SQLAlchemy-Utils==0.33.1
 tkreadonly==0.6.0
 traitlets==4.3.2
 twilio==5.7.0
@@ -71,3 +72,4 @@ wcwidth==0.1.7
 Werkzeug==0.11.10
 wrapt==1.10.11
 WTForms==2.1
+coverage==4.5.1

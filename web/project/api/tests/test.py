@@ -29,56 +29,37 @@ class TestLogin(unittest.TestCase):
         response = self.app.post(
             '/register/',
             data={
-                'username': 'something',
-                'email': 'jackson.kontny@gmail.com',
+                'email': 'user@gmail.com',
                 'password': 'password',
             })
         self.assertEqual(response.status_code, 201)
         data = json.loads(response.data)
         self.assertTrue(data['created'])
         self.assertEqual(data['so_pending_id'], '')
-        assert models.User.query.filter_by(username='something').first()
+        assert models.User.query.filter_by(email='user@gmail.com').first()
 
     def test_incomplete_data(self):
         response = self.app.post(
             '/register/',
             data={
-                'username': 'something',
                 'password': 'password',
             })
         self.assertEqual(response.status_code, 400)
         response = self.app.post(
             '/register/',
             data={
-                'username': 'something',
-                'email': 'jackson.kontny@gmail.com',
-            })
-        self.assertEqual(response.status_code, 400)
-        response = self.app.post(
-            '/register/',
-            data={
-                'password': 'password',
                 'email': 'jackson.kontny@gmail.com',
             })
         self.assertEqual(response.status_code, 400)
 
     def test_duplicate_info(self):
         new_user = models.User(
-            username='something', email='something@something.com', password_hash='hash')
+            email='something@something.com', password_hash='hash')
         new_user.save()
 
         response = self.app.post(
             '/register/',
             data={
-                'username': new_user.username,
-                'email': 'new@email.com',
-                'password': 'password',
-            })
-        self.assertEqual(response.status_code, 400)
-        response = self.app.post(
-            '/register/',
-            data={
-                'username': 'newusername',
                 'email': new_user.email,
                 'password': 'password',
             })
@@ -89,30 +70,29 @@ class TestLogin(unittest.TestCase):
             email='something@something.com', password_hash='hash', is_temp=True)
         new_user.save()
         so_pending_user = models.User(
-            username='waiting', email='waiting@something.com',
+            email='waiting@something.com',
             password_hash='hash', is_temp=False, so_id=new_user.id)
         so_pending_user.save()
         response = self.app.post(
             '/register/',
             data={
-                'username': 'newusername',
                 'email': new_user.email,
                 'password': 'password',
             })
         self.assertEqual(response.status_code, 201)
         data = json.loads(response.data)
         self.assertFalse(data['created'])
-        self.assertEqual(data['username'], 'newusername')
+        self.assertEqual(data['email'], 'something@something.com')
         self.assertEqual(data['so_pending_id'], so_pending_user.id)
 
     def test_update_new_so(self):
         user = models.User(
-            username='something', email='something@something.com')
+            email='something@something.com')
         user.save(password='password')
         response = self.app.post(
-            '/login/',
+            '/login_standard/',
             data={
-                'login': user.username,
+                'email': user.email,
                 'password': 'password',
             })
         self.assertEqual(response.status_code, 200)
@@ -133,16 +113,16 @@ class TestLogin(unittest.TestCase):
 
     def test_update_existing_so(self):
         user = models.User(
-            username='something', email='something@something.com')
+            email='something@something.com')
         user.save(password='password')
         existing_so = models.User(
-            username='i_exist', email='existing@something.com')
+            email='existing@something.com')
         existing_so.save(password='password')
-        existing_so = models.User.query.filter_by(username='i_exist').first()
+        existing_so = models.User.query.filter_by(email='existing@something.com').first()
         response = self.app.post(
-            '/login/',
+            '/login_standard/',
             data={
-                'login': user.username,
+                'email': user.email,
                 'password': 'password',
             })
         self.assertEqual(response.status_code, 200)
@@ -162,33 +142,33 @@ class TestLogin(unittest.TestCase):
 
     def test_login(self):
         new_user = models.User(
-            username='something', email='something@something.com')
+            email='something@something.com')
         new_user.save(password='password')
         response = self.app.post(
-            '/login/',
+            '/login_standard/',
             data={
-                'login': new_user.username,
+                'email': new_user.email,
                 'password': 'password',
             })
         self.assertEqual(response.status_code, 200)
 
     def test_incorrect_password(self):
         new_user = models.User(
-            username='something', email='something@something.com')
+            email='something@something.com')
         new_user.save(password='password')
         response = self.app.post(
-            '/login/',
+            '/login_standard/',
             data={
-                'login': new_user.username,
+                'email': new_user.email,
                 'password': 'password_wrong',
             })
         self.assertEqual(response.status_code, 400)
 
     def test_ping(self):
         user = models.User(
-            username='something', email='something@something.com')
+            email='something@something.com')
         so = models.User(
-            username='someones_gf', email='someones_gf@something.com')
+            email='someones_gf@something.com')
         user.save(password='password')
         so.save(password='password')
         user.so_id = so.id
@@ -197,9 +177,9 @@ class TestLogin(unittest.TestCase):
         so.save()
         self.assertEqual(user.sent_messages().count(), 0)
         response = self.app.post(
-            '/login/',
+            '/login_standard/',
             data={
-                'login': user.username,
+                'email': user.email,
                 'password': 'password',
             })
         response = self.app.post('/ping/')
@@ -211,9 +191,9 @@ class TestLogin(unittest.TestCase):
 
     def test_ping_without_so(self):
         user = models.User(
-            username='something', email='something@something.com')
+            email='something@something.com')
         so = models.User(
-            username='someones_gf', email='someones_gf@something.com')
+            email='someones_gf@something.com')
         user.save(password='password')
         so.save(password='password')
         user.so_id = so.id
@@ -222,9 +202,9 @@ class TestLogin(unittest.TestCase):
         so.save()
         self.assertEqual(user.sent_messages().count(), 0)
         response = self.app.post(
-            '/login/',
+            '/login_standard/',
             data={
-                'login': user.username,
+                'email': user.email,
                 'password': 'password',
             })
         response = self.app.post('/ping/')
@@ -233,9 +213,9 @@ class TestLogin(unittest.TestCase):
 
     def test_get_messages(self):
         user = models.User(
-            username='something', email='something@something.com')
+            email='something@something.com')
         so = models.User(
-            username='someones_gf', email='someones_gf@something.com')
+            email='someones_gf@something.com')
         user.save(password='password')
         so.save(password='password')
         user.so_id = so.id
@@ -247,9 +227,9 @@ class TestLogin(unittest.TestCase):
             ping.save()
         self.assertEqual(user.sent_messages().count(), 5)
         response = self.app.post(
-            '/login/',
+            '/login_standard/',
             data={
-                'login': so.username,
+                'email': so.email,
                 'password': 'password',
             })
         response = self.app.get('/get_messages/')
@@ -258,9 +238,9 @@ class TestLogin(unittest.TestCase):
         self.assertEqual(len(data), 5)
 
         response = self.app.post(
-            '/login/',
+            '/login_standard/',
             data={
-                'login': user.username,
+                'email': user.email,
                 'password': 'password',
             })
         response = self.app.get('/get_messages/')

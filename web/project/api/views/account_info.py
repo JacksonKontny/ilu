@@ -13,15 +13,14 @@ account_info_blueprint = Blueprint('account_info', __name__)
 
 @account_info_blueprint.route('/register/', methods=['POST'])
 def register():
-    """Registers a user
+    """Registers a user if they do not wish to use OAuth
 
     Args:
-        username (str): The user's username
         email (str): The user's email address - must follow email convention
         password (str): The user's non-hashed password
 
     Returns:
-        201 - {'id': '<user.id>', 'username': <user.username>, 'email': <user.email>, 'so_pending': (bool)} if successful
+        201 - {'id': '<user.id>', 'email': <user.email>, 'so_pending': (bool)} if successful
         400 - {'error_field': ['field error1', 'field error2'...]..., } if form errors
 
         `so_pending` designates if the user has a pending so
@@ -35,7 +34,6 @@ def register():
             so_pending_id = User.query.filter_by(so_id=user.id).first().id
         response = jsonify({
             'id': user.id,
-            'username': user.username,
             'email': user.email,
             'so_pending_id': so_pending_id,
             'created': user_created,
@@ -58,7 +56,6 @@ def update_so():
     the found User as this user's SO
 
     Args:
-        username (str): The significant other's username (not required)
         email (str): The significant other's email (not required)
 
     Returns:
