@@ -14,11 +14,13 @@ services:
 
   postgres:
     image: db_test
-    restart: "no"
+    container_name: db-test
+    expose:
+      - "5433"
+    environment:
+      - POSTGRES_DB=flask-db-test
     build:
         context: ./postgresql
         args:
           POSTGRES_DB: flask-db-test
-
-volumes:
-    db:
+    command: "-p 5433"
