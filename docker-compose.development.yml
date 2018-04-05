@@ -8,9 +8,12 @@ services:
     environment:
       - FLASK_APP=run.py
       - FLASK_DEBUG=1
+      - OAUTHLIB_INSECURE_TRANSPORT=1
     volumes:
       - ./web/:/home/flask/app/web
     command: flask run --host=0.0.0.0
+    stdin_open: true
+    tty: true
     # --port=8000 for NGINX
 
   postgres:
