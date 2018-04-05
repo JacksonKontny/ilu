@@ -1,0 +1,6 @@
+[run]
+omit = 
+	create_postgres_dockerfile.py
+	run.py
+	instance/*
+	*/tests/*
